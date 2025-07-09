@@ -1,0 +1,6 @@
+@LinkPulse.API_HostAddress = http://localhost:5053
+
+GET {{LinkPulse.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

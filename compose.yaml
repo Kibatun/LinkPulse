@@ -1,0 +1,13 @@
+﻿services:
+  linkpulse.api:
+    image: linkpulse.api
+    build:
+      context: .
+      dockerfile: LinkPulse.Api/Dockerfile
+
+  linkpulse.worker:
+    image: linkpulse.worker
+    build:
+      context: .
+      dockerfile: LinkPulse.Worker/Dockerfile
+

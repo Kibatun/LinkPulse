@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinkPulse.Api", "LinkPulse.Api\LinkPulse.Api.csproj", "{1675F7F5-051A-421F-B565-CCCBF366E57E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8B97167A-C529-445B-A8BB-C770DD48F4AE}"
+	ProjectSection(SolutionItems) = preProject
+		compose.yaml = compose.yaml
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinkPulse.Worker", "LinkPulse.Worker\LinkPulse.Worker.csproj", "{48C98789-E489-41FD-8C39-C16174368334}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1675F7F5-051A-421F-B565-CCCBF366E57E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1675F7F5-051A-421F-B565-CCCBF366E57E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1675F7F5-051A-421F-B565-CCCBF366E57E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1675F7F5-051A-421F-B565-CCCBF366E57E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48C98789-E489-41FD-8C39-C16174368334}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48C98789-E489-41FD-8C39-C16174368334}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48C98789-E489-41FD-8C39-C16174368334}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48C98789-E489-41FD-8C39-C16174368334}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
