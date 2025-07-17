@@ -9,6 +9,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<ShortenedUrl>(builder => { builder.HasIndex(x => x.Id).IsUnique(); });
+        modelBuilder.Entity<ShortenedUrl>(builder => { builder.HasIndex(x => x.ShortCode).IsUnique(); });
     }
 }
