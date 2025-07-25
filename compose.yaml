@@ -12,7 +12,7 @@
       - "5432:5432"
 
   rabbitmq:
-    image: rabbitmq:3-managment
+    image: rabbitmq:3-management
     restart: always
     ports:
       - "5672:5672" #Порт для подключения моих компонетнтов
@@ -27,7 +27,7 @@
       - "8080:8080" #http
       - "8081:8081" #https
     depends_on: # АПИ не запустится если не запущены...
-      - postgres 
+      - postgres
       - rabbitmq
   
   linkpulse.worker:
@@ -38,3 +38,6 @@
     depends_on:
       - postgres
       - rabbitmq
+
+volumes:
+  postgres_data:
