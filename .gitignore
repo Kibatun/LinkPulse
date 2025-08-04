@@ -90,3 +90,7 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 # End of https://www.toptal.com/developers/gitignore/api/dotnetcore,rider
+/.idea/.idea.PetProj/.idea/.name
+/.idea/.idea.PetProj/.idea/indexLayout.xml
+/.idea/.idea.PetProj/.idea/projectSettingsUpdater.xml
+/.idea/.idea.PetProj/.idea/vcs.xml
