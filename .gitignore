@@ -90,3 +90,6 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 # End of https://www.toptal.com/developers/gitignore/api/dotnetcore,rider
+/.idea/.idea.PetProj/.idea/.name
+/.idea/.idea.PetProj/Docker/compose.generated.override.yml
+/.idea/.idea.PetProj/Docker/docker-compose.generated.override.yml
