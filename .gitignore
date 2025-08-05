@@ -93,3 +93,7 @@ fabric.properties
 /.idea/.idea.PetProj/.idea/.name
 /.idea/.idea.PetProj/Docker/compose.generated.override.yml
 /.idea/.idea.PetProj/Docker/docker-compose.generated.override.yml
+/LinkPulse.Api/Migrations/20250805082639_InitialCreate.cs
+/LinkPulse.Api/Migrations/20250805082639_InitialCreate.Designer.cs
+/LinkPulse.Api/Migrations/AppDbContextModelSnapshot.cs
+/.idea/.idea.PetProj/.idea/dataSources.xml
