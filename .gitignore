@@ -97,3 +97,4 @@ fabric.properties
 /LinkPulse.Api/Migrations/20250805082639_InitialCreate.Designer.cs
 /LinkPulse.Api/Migrations/AppDbContextModelSnapshot.cs
 /.idea/.idea.PetProj/.idea/dataSources.xml
+/PetProj.sln.DotSettings.user
