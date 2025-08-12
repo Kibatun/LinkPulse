@@ -3,6 +3,7 @@ using LinkPulse.Api.DTO;
 using LinkPulse.Api.Entities;
 using LinkPulse.Api.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace LinkPulse.Api.Controllers;
 
@@ -42,5 +43,17 @@ public class UrlsController : ControllerBase
         };
 
         return Ok(response);
+    }
+    
+    [HttpGet("/a/{shortCode}")] 
+    public async Task<IActionResult> RedirectToLongUrl(string shortCode)
+    {
+        var shortenedUrl = await _dbContext.ShortenedUrls
+            .FirstOrDefaultAsync(u => u.ShortCode == shortCode);
+
+        if (shortenedUrl == null)
+            return NotFound();
+        
+        return RedirectPermanent(shortenedUrl.LongUrl);
     }
 }
