@@ -1,4 +1,5 @@
 using LinkPulse.Worker.Data;
+using LinkPulse.Worker.Services;
 using RabbitMQ.Client;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;

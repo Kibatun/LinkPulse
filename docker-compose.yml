@@ -44,3 +44,4 @@
 
 volumes:
   postgres_data:
+    name: linkpulse_db_data

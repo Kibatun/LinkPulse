@@ -27,11 +27,11 @@ builder.Services.AddSingleton<IConnection>(sp =>
 var app = builder.Build();
 
 //Автоматическая миграция при каждом запуске
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    dbContext.Database.Migrate();
-}
+// using (var scope = app.Services.CreateScope())
+// {
+//     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+//     dbContext.Database.Migrate();
+// }
 //
 
 
