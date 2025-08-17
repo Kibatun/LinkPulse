@@ -29,6 +29,8 @@
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080;
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=linkpulse_db;Username=user;Password=password;Port=5432
+      - ConnectionStrings__RabbitMqConnection=amqp://guest:guest@rabbitmq:5672/
     depends_on: # АПИ не запустится если не запущены...
       - postgres
       - rabbitmq
@@ -38,6 +40,9 @@
     build:
       context: .
       dockerfile: LinkPulse.Worker/Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=linkpulse_db;Username=user;Password=password;Port=5432
+      - ConnectionStrings__RabbitMqConnection=amqp://guest:guest@rabbitmq:5672/
     depends_on:
       - postgres
       - rabbitmq

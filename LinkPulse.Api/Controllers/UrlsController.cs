@@ -12,10 +12,14 @@ namespace LinkPulse.Api.Controllers;
 public class UrlsController : ControllerBase
 {
     private readonly AppDbContext _dbContext;
+    private readonly RabbitMqPublisher _rabbitMqPublisher;
+    private readonly ILogger<UrlsController> _logger;
 
-    public UrlsController(AppDbContext dbContext)
+    public UrlsController(AppDbContext dbContext, RabbitMqPublisher rabbitMqPublisher, ILogger<UrlsController> logger)
     {
         _dbContext = dbContext;
+        _rabbitMqPublisher = rabbitMqPublisher;
+        _logger = logger;
     }
 
     [HttpPost]
@@ -31,7 +35,8 @@ public class UrlsController : ControllerBase
             Id = Guid.NewGuid(),
             LongUrl = request.Url,
             ShortCode = shortCode,
-            CreatedOnUtc = DateTime.UtcNow
+            CreatedOnUtc = DateTime.UtcNow,
+            ClickCount = 0
         };
 
         await _dbContext.ShortenedUrls.AddAsync(shortenedUrl);
@@ -39,21 +44,35 @@ public class UrlsController : ControllerBase
 
         var response = new
         {
-            shortUrl = $"http://localhost:8080/{shortenedUrl.ShortCode}"
+            shortUrl = $"http://localhost:8080/a/{shortenedUrl.ShortCode}"
         };
 
         return Ok(response);
     }
-    
-    [HttpGet("/a/{shortCode}")] 
+
+    [HttpGet("/a/{shortCode}")]
     public async Task<IActionResult> RedirectToLongUrl(string shortCode)
     {
-        var shortenedUrl = await _dbContext.ShortenedUrls
-            .FirstOrDefaultAsync(u => u.ShortCode == shortCode);
+        try
+        {
+            var shortenedUrl = await _dbContext.ShortenedUrls
+                .FirstOrDefaultAsync(u => u.ShortCode == shortCode);
 
-        if (shortenedUrl == null)
-            return NotFound();
-        
-        return RedirectPermanent(shortenedUrl.LongUrl);
+            if (shortenedUrl == null)
+            {
+                _logger.LogWarning("Short code not found: {ShortCode}", shortCode);
+                return NotFound();
+            }
+
+            await _rabbitMqPublisher.PublishClickEvent(shortenedUrl.Id);
+            _logger.LogInformation("Published click event for URL ID: {UrlId}", shortenedUrl.Id);
+
+            return RedirectPermanent(shortenedUrl.LongUrl);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error processing redirect for short code: {ShortCode}", shortCode);
+            return StatusCode(500, "Internal server error");
+        }
     }
 }
