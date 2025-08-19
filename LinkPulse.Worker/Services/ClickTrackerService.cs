@@ -1,7 +1,8 @@
 using System.Text;
 using System.Text.Json;
-using LinkPulse.Worker.Data;
+using LinkPulse.Core.Data;
 using Microsoft.EntityFrameworkCore;
+using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -15,21 +16,26 @@ public class ClickTrackerService : BackgroundService
     private IChannel? _channel;
     private const string QueueName = "click_tracking_queue";
     private readonly SemaphoreSlim _semaphore = new(1, 1);
+    private readonly IAsyncPolicy _retryPolicy;
 
-    public ClickTrackerService(ILogger<ClickTrackerService> logger, IServiceProvider serviceProvider,
-        IConnection connection)
+    public ClickTrackerService(
+        ILogger<ClickTrackerService> logger,
+        IServiceProvider serviceProvider,
+        IConnection connection,
+        IAsyncPolicy retryPolicy)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
         _connection = connection;
+        _retryPolicy = retryPolicy;
     }
-    
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation("ClickTrackerService is starting.");
-        
+
         await InitializeChannelAsync(stoppingToken);
-        
+
         while (!stoppingToken.IsCancellationRequested)
         {
             try
@@ -90,12 +96,13 @@ public class ClickTrackerService : BackgroundService
             consumer.ReceivedAsync += ProcessMessage;
 
             await _channel.BasicConsumeAsync(
-                queue: QueueName, 
-                autoAck: false, 
-                consumer: consumer, 
+                queue: QueueName,
+                autoAck: false,
+                consumer: consumer,
                 cancellationToken: cancellationToken);
 
-            _logger.LogInformation("Consumer started successfully. Waiting for messages on queue '{QueueName}'.", QueueName);
+            _logger.LogInformation("Consumer started successfully. Waiting for messages on queue '{QueueName}'.",
+                QueueName);
         }
         finally
         {
@@ -119,44 +126,48 @@ public class ClickTrackerService : BackgroundService
                 return;
             }
 
-            using (var scope = _serviceProvider.CreateScope())
+            await _retryPolicy.ExecuteAsync(async () =>
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                
-                var shortenedUrl = await dbContext.ShortenedUrls
-                    .FirstOrDefaultAsync(u => u.Id == message.ShortenedUrlId);
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                if (shortenedUrl != null)
-                {
-                    shortenedUrl.ClickCount++;
-                    await dbContext.SaveChangesAsync();
-                    _logger.LogInformation("Updated click count for URL ID: {UrlId}. New count: {ClickCount}", 
-                        message.ShortenedUrlId, shortenedUrl.ClickCount);
+                    var shortenedUrl = await dbContext.ShortenedUrls
+                        .FirstOrDefaultAsync(u => u.Id == message.ShortenedUrlId);
+
+                    if (shortenedUrl != null)
+                    {
+                        shortenedUrl.ClickCount++;
+                        await dbContext.SaveChangesAsync();
+                        _logger.LogInformation("Updated click count for URL ID: {UrlId}. New count: {ClickCount}",
+                            message.ShortenedUrlId, shortenedUrl.ClickCount);
+                    }
+                    else
+                    {
+                        _logger.LogWarning("URL with ID: {UrlId} not found in database", message.ShortenedUrlId);
+                    }
                 }
-                else
-                {
-                    _logger.LogWarning("URL with ID: {UrlId} not found in database", message.ShortenedUrlId);
-                }
-            }
+            });
 
             await _channel!.BasicAckAsync(ea.DeliveryTag, false);
         }
         catch (JsonException ex)
         {
             _logger.LogError(ex, "Failed to deserialize message: {Message}", messageString);
-            await _channel!.BasicNackAsync(ea.DeliveryTag, false, false); // Не возвращаем в очередь невалидные сообщения
+            await _channel!.BasicNackAsync(ea.DeliveryTag, false,
+                false);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error processing message: {Message}", messageString);
-            await _channel!.BasicNackAsync(ea.DeliveryTag, false, true); // Возвращаем в очередь для повтора
+            await _channel!.BasicNackAsync(ea.DeliveryTag, false, true); 
         }
     }
 
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("ClickTrackerService is stopping...");
-        
+
         try
         {
             if (_channel?.IsOpen == true)

@@ -28,4 +28,8 @@
       <Folder Include="Migrations\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\LinkPulse.Core\LinkPulse.Core.csproj" />
+    </ItemGroup>
+
 </Project>

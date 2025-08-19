@@ -1,7 +1,7 @@
-using LinkPulse.Api.Data;
 using LinkPulse.Api.DTO;
-using LinkPulse.Api.Entities;
 using LinkPulse.Api.Services;
+using LinkPulse.Core.Data;
+using LinkPulse.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -74,5 +74,30 @@ public class UrlsController : ControllerBase
             _logger.LogError(ex, "Error processing redirect for short code: {ShortCode}", shortCode);
             return StatusCode(500, "Internal server error");
         }
+    }
+    
+    [HttpGet("{shortCode}/stats")]
+    [ProducesResponseType(typeof(UrlStatsResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetUrlStats(string shortCode)
+    {
+        var shortenedUrl = await _dbContext.ShortenedUrls
+            .AsNoTracking() 
+            .FirstOrDefaultAsync(u => u.ShortCode == shortCode);
+
+        if (shortenedUrl == null)
+        {
+            return NotFound();
+        }
+
+        var shortUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/a/{shortenedUrl.ShortCode}";
+
+        var response = new UrlStatsResponse(
+            shortenedUrl.LongUrl,
+            shortUrl,
+            shortenedUrl.ClickCount
+        );
+
+        return Ok(response);
     }
 }

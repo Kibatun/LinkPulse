@@ -1,7 +1,7 @@
-using LinkPulse.Worker.Entities;
+using LinkPulse.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace LinkPulse.Worker.Data;
+namespace LinkPulse.Core.Data;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
@@ -9,7 +9,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<ShortenedUrl>(builder =>
-            { builder.HasIndex(x => x.ShortCode).IsUnique(); });
+        modelBuilder.Entity<ShortenedUrl>(builder => { builder.HasIndex(x => x.ShortCode).IsUnique(); });
     }
 }

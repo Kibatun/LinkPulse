@@ -1,4 +1,4 @@
-namespace LinkPulse.Worker.Entities;
+namespace LinkPulse.Core.Entities;
 
 public class ShortenedUrl
 {

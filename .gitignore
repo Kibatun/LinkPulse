@@ -98,3 +98,4 @@ fabric.properties
 /LinkPulse.Api/Migrations/AppDbContextModelSnapshot.cs
 /.idea/.idea.PetProj/.idea/dataSources.xml
 /PetProj.sln.DotSettings.user
+/.env

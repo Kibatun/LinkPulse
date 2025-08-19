@@ -1,7 +1,9 @@
-using LinkPulse.Worker.Data;
+using LinkPulse.Core.Data;
 using LinkPulse.Worker.Services;
 using RabbitMQ.Client;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using Polly;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
@@ -31,7 +33,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         {
             var factory = sp.GetRequiredService<IConnectionFactory>();
             var logger = sp.GetRequiredService<ILogger<Program>>();
-            
+
             try
             {
                 var connection = factory.CreateConnectionAsync().GetAwaiter().GetResult();
@@ -44,6 +46,22 @@ IHost host = Host.CreateDefaultBuilder(args)
                 throw;
             }
         });
+
+        var retryPolicy = Policy
+            .Handle<NpgsqlException>() // Ошибки подключения Postgres
+            .Or<DbUpdateException>() // Ошибки сохранения EF Core
+            .WaitAndRetryAsync(
+                3, // Попробовать 3 раза
+                retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), // Задержка: 2, 4, 8 секунд
+                onRetry: (exception, timeSpan, retryCount, context) =>
+                {
+                    var logger = services.BuildServiceProvider().GetService<ILogger<Program>>();
+                    logger?.LogWarning(exception,
+                        "[Polly] Retry {RetryCount} due to {ExceptionType}. Waiting {TimeSpan}s before next try.",
+                        retryCount, exception.GetType().Name, timeSpan.TotalSeconds);
+                });
+
+        services.AddSingleton<IAsyncPolicy>(retryPolicy);
 
         services.AddHostedService<ClickTrackerService>();
     })
