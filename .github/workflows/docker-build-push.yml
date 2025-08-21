@@ -24,7 +24,7 @@ jobs:
 
       - name: Convert image name to lowercase
         run: |
-          echo "IMAGE_NAME=${REPO_NAME,,}" >>${GITHUB_ENV}
+          echo "IMAGE_OWNER_LOWERCASE=${REPO_NAME,,}" >>${GITHUB_ENV}
 
       - name: Log into registry ${{ env.REGISTRY }}
         uses: docker/login-action@v3
@@ -39,7 +39,7 @@ jobs:
           context: .
           file: ./LinkPulse.Api/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/linkpulse-api:latest # Формируем тег для API
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER_LOWERCASE }}/linkpulse-api:latest # Формируем тег для API
       
       - name: Build and push Worker image
         uses: docker/build-push-action@v6
@@ -47,4 +47,4 @@ jobs:
           context: .
           file: ./LinkPulse.Worker/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/linkpulse-worker:latest # Формируем тег для Worker
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER_LOWERCASE }}/linkpulse-worker:latest # Формируем тег для Worker
