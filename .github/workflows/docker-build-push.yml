@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  REPO_NAME: ${{ github.repository }}
+  IMAGE_OWNER: ${{ github.repository_owner }}
 
 jobs:
 
@@ -26,7 +26,7 @@ jobs:
 
       - name: Convert image name to lowercase
         run: |
-          echo "IMAGE_NAME=${REPO_NAME,,}" >>${GITHUB_ENV}
+          echo "IMAGE_NAME=${IMAGE_OWNER,,}" >>${GITHUB_ENV}
 
       - name: Log into registry ${{ env.REGISTRY }}
         uses: docker/login-action@v3
@@ -42,7 +42,7 @@ jobs:
           context: .
           file: ./LinkPulse.Api/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/linkpulse-api:latest
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/linkpulse-api:latest
       
       #Сборка Worker-а
       - name: Build and push Worker image
@@ -51,4 +51,4 @@ jobs:
           context: .
           file: ./LinkPulse.Worker/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/linkpulse-worker:latest
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/linkpulse-worker:latest
