@@ -4,11 +4,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinkPulse.Api", "LinkPulse.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8B97167A-C529-445B-A8BB-C770DD48F4AE}"
 	ProjectSection(SolutionItems) = preProject
-		compose.yaml = compose.yaml
+		docker-compose.yml = docker-compose.yml
 		.gitignore = .gitignore
+		.env = .env
+		docker-compose.override.yml = docker-compose.override.yml
+		docker-compose.prod.yml = docker-compose.prod.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinkPulse.Worker", "LinkPulse.Worker\LinkPulse.Worker.csproj", "{48C98789-E489-41FD-8C39-C16174368334}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinkPulse.Core", "LinkPulse.Core\LinkPulse.Core.csproj", "{A6F81E84-D91E-4573-A3C8-B199B523D4E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +29,9 @@ Global
 		{48C98789-E489-41FD-8C39-C16174368334}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48C98789-E489-41FD-8C39-C16174368334}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48C98789-E489-41FD-8C39-C16174368334}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6F81E84-D91E-4573-A3C8-B199B523D4E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6F81E84-D91E-4573-A3C8-B199B523D4E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6F81E84-D91E-4573-A3C8-B199B523D4E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6F81E84-D91E-4573-A3C8-B199B523D4E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

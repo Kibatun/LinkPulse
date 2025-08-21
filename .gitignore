@@ -91,6 +91,11 @@ fabric.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/dotnetcore,rider
 /.idea/.idea.PetProj/.idea/.name
-/.idea/.idea.PetProj/.idea/indexLayout.xml
-/.idea/.idea.PetProj/.idea/projectSettingsUpdater.xml
-/.idea/.idea.PetProj/.idea/vcs.xml
+/.idea/.idea.PetProj/Docker/compose.generated.override.yml
+/.idea/.idea.PetProj/Docker/docker-compose.generated.override.yml
+/LinkPulse.Api/Migrations/20250805082639_InitialCreate.cs
+/LinkPulse.Api/Migrations/20250805082639_InitialCreate.Designer.cs
+/LinkPulse.Api/Migrations/AppDbContextModelSnapshot.cs
+/.idea/.idea.PetProj/.idea/dataSources.xml
+/PetProj.sln.DotSettings.user
+/.env

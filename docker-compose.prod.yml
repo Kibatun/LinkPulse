@@ -1,0 +1,13 @@
+services:
+  linkpulse.api:
+    ports:
+      - "80:8080"
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+
+  linkpulse.worker:
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production

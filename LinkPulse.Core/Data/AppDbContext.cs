@@ -1,7 +1,7 @@
-using LinkPulse.Api.Entities;
+using LinkPulse.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace LinkPulse.Api.Data;
+namespace LinkPulse.Core.Data;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
