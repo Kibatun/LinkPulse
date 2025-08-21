@@ -42,7 +42,7 @@ jobs:
           context: .
           file: ./LinkPulse.Api/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ tolower(env.REPO_NAME) }}/linkpulse-api:latest
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/linkpulse-api:latest
       
       #Сборка Worker-а
       - name: Build and push Worker image
@@ -51,4 +51,4 @@ jobs:
           context: .
           file: ./LinkPulse.Worker/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ tolower(env.REPO_NAME) }}/linkpulse-worker:latest
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/linkpulse-worker:latest
