@@ -29,7 +29,23 @@ public class UrlsController : ControllerBase
             return BadRequest("The specified URL is not valid.");
 
         var shortCode = ShortCodeGenerator.Generate();
+        const int maxAttempts = 5;
+        int attempts = 0;
 
+        do
+        {
+            if (attempts >= maxAttempts)
+            {
+                _logger.LogError(
+                    "Не получилось сгенерировать уникальный код после {MaxAttempts} попыток", 
+                    maxAttempts);
+                return StatusCode(500, "Не удалось сгенерировать уникальную короткую ссылку");
+            }
+            shortCode = ShortCodeGenerator.Generate();
+            attempts++;
+        }
+        while(await _dbContext.ShortenedUrls.AnyAsync(s => s.ShortCode == shortCode));
+        
         var shortenedUrl = new ShortenedUrl
         {
             Id = Guid.NewGuid(),
@@ -67,7 +83,7 @@ public class UrlsController : ControllerBase
             await _rabbitMqPublisher.PublishClickEvent(shortenedUrl.Id);
             _logger.LogInformation("Published click event for URL ID: {UrlId}", shortenedUrl.Id);
 
-            return RedirectPermanent(shortenedUrl.LongUrl);
+            return Redirect(shortenedUrl.LongUrl);
         }
         catch (Exception ex)
         {
